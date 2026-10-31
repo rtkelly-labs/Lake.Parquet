@@ -213,5 +213,14 @@
   {"file": "src/Parquet/Encodings/BitPackedEncoder.cs", "type": "BitPackedEncoder", "member": "Unpack8LongValuesBE64", "parameters": "Span<byte>, Span<long>", "sha256": "d1397e7761490162"},
   {"file": "src/Parquet/Encodings/BitPackedEncoder.cs", "type": "BitPackedEncoder", "member": "Pack8LongValuesBE64", "parameters": "Span<long>, Span<byte>", "sha256": "ad6e4e085ee9261c"},
   {"file": "src/Parquet.Test/Encodings/BitPackedEncoderTest.cs", "type": "BitPackedEncoderTest", "member": "Encode1to7WithBitWidth3BE", "parameters": "", "sha256": "69f6522ff1cca3da"},
-  {"file": "src/Parquet.Test/Encodings/BitPackedEncoderTest.cs", "type": "BitPackedEncoderTest", "member": "Decode1to7WithBitWidthBE", "parameters": "", "sha256": "bc3f3f7d4584e309"}
+  {"file": "src/Parquet.Test/Encodings/BitPackedEncoderTest.cs", "type": "BitPackedEncoderTest", "member": "Decode1to7WithBitWidthBE", "parameters": "", "sha256": "bc3f3f7d4584e309"},
+  {"file": "src/Parquet/Encodings/DeltaBinaryPackedEncoder.Variations.cs", "type": "DeltaBinaryPackedEncoder", "member": "FlushShortBlock", "parameters": "Span<short>, short, Stream, int, int", "sha256": "87c96f679c2fb050"},
+  {"file": "src/Parquet/Encodings/DeltaBinaryPackedEncoder.Variations.cs", "type": "DeltaBinaryPackedEncoder", "member": "EncodeShort", "parameters": "ReadOnlySpan<short>, Stream, int, int", "sha256": "d83adb52a901f257"},
+  {"file": "src/Parquet/Encodings/DeltaBinaryPackedEncoder.Variations.cs", "type": "DeltaBinaryPackedEncoder", "member": "DecodeShort", "parameters": "Span<byte>, Span<short>, int", "sha256": "492bf49a7c76140e"},
+  {"file": "src/Parquet/Encodings/DeltaBinaryPackedEncoder.Variations.cs", "type": "DeltaBinaryPackedEncoder", "member": "FlushUshortBlock", "parameters": "Span<ushort>, ushort, Stream, int, int", "sha256": "91f95b7c0d4efecc"},
+  {"file": "src/Parquet/Encodings/DeltaBinaryPackedEncoder.Variations.cs", "type": "DeltaBinaryPackedEncoder", "member": "EncodeUshort", "parameters": "ReadOnlySpan<ushort>, Stream, int, int", "sha256": "9bb0ab0ed954406c"},
+  {"file": "src/Parquet/Encodings/DeltaBinaryPackedEncoder.Variations.cs", "type": "DeltaBinaryPackedEncoder", "member": "DecodeUshort", "parameters": "Span<byte>, Span<ushort>, int", "sha256": "0eb17d9d4a7a0911"},
+  {"file": "src/Parquet/Encodings/DeltaBinaryPackedEncoder.Variations.cs", "type": "DeltaBinaryPackedEncoder", "member": "FlushUintBlock", "parameters": "Span<uint>, uint, Stream, int, int", "sha256": "96efb9124326fd86"},
+  {"file": "src/Parquet/Encodings/DeltaBinaryPackedEncoder.Variations.cs", "type": "DeltaBinaryPackedEncoder", "member": "EncodeUint", "parameters": "ReadOnlySpan<uint>, Stream, int, int", "sha256": "2610bbfec1dd56c5"},
+  {"file": "src/Parquet/Encodings/DeltaBinaryPackedEncoder.Variations.cs", "type": "DeltaBinaryPackedEncoder", "member": "DecodeUint", "parameters": "Span<byte>, Span<uint>, int", "sha256": "b39cd357fb191a1b"}
 ]
