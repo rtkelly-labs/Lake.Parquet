@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Diagnostics.CodeAnalysis;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +25,7 @@ static class ParquetClrSchemaExtensions {
     /// <param name="t"></param>
     /// <param name="baseType"></param>
     /// <returns></returns>
-    public static bool TryExtractIEnumerableType(this Type t, out Type? baseType) {
+    public static bool TryExtractIEnumerableType([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] this Type t, out Type? baseType) {
         if(typeof(byte[]) == t || typeof(string) == t || typeof(ReadOnlyMemory<char>) == t || typeof(ReadOnlyMemory<byte>) == t) {
             //it's a special case to avoid confusion between byte arrays and repeatable bytes
             baseType = null;
@@ -60,7 +61,7 @@ static class ParquetClrSchemaExtensions {
         return false;
     }
 
-    public static Type ExtractElementTypeFromEnumerableType(this Type t) {
+    public static Type ExtractElementTypeFromEnumerableType([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] this Type t) {
         if(t.TryExtractIEnumerableType(out Type? iet)) {
             return iet!;
         }
@@ -75,7 +76,7 @@ static class ParquetClrSchemaExtensions {
         return method ?? throw new InvalidOperationException("method not present");
     }
 
-    public static bool IsGenericIDictionary(this Type t) {
+    public static bool IsGenericIDictionary([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] this Type t) {
         return t.IsGenericType &&
             (t.GetGenericTypeDefinition() == typeof(IDictionary<,>) ||
             t.GetInterfaces().Any(x => x.IsGenericType && typeof(IDictionary<,>) == x.GetGenericTypeDefinition()));
@@ -87,7 +88,7 @@ static class ParquetClrSchemaExtensions {
             t.GetInterfaces().Any(x => x.IsGenericType && typeof(IList<>) == x.GetGenericTypeDefinition()));
     }
 
-    public static bool TryExtractDictionaryType(this Type t, out Type? keyType, out Type? valueType) {
+    public static bool TryExtractDictionaryType([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] this Type t, out Type? keyType, out Type? valueType) {
         if(t.IsGenericIDictionary()) {
             TypeInfo ti = t.GetTypeInfo();
             keyType = ti.GenericTypeArguments[0];
@@ -168,16 +169,46 @@ static class ParquetClrSchemaExtensions {
         return ti.GenericTypeArguments[0];
     }
 
+    /// <summary>
+    /// The nullable form of each value type a data field can have, so that no type is constructed at run time, which
+    /// native AOT cannot do for a type it has not seen.
+    /// </summary>
+    private static readonly Dictionary<Type, Type> NullableOf = new() {
+        [typeof(bool)] = typeof(bool?), [typeof(byte)] = typeof(byte?), [typeof(sbyte)] = typeof(sbyte?),
+        [typeof(short)] = typeof(short?), [typeof(ushort)] = typeof(ushort?), [typeof(int)] = typeof(int?),
+        [typeof(uint)] = typeof(uint?), [typeof(long)] = typeof(long?), [typeof(ulong)] = typeof(ulong?),
+        [typeof(float)] = typeof(float?), [typeof(double)] = typeof(double?), [typeof(decimal)] = typeof(decimal?),
+        [typeof(System.Numerics.BigInteger)] = typeof(System.Numerics.BigInteger?),
+        [typeof(Parquet.Data.BigDecimal)] = typeof(Parquet.Data.BigDecimal?),
+        [typeof(DateTime)] = typeof(DateTime?), [typeof(DateOnly)] = typeof(DateOnly?), [typeof(TimeOnly)] = typeof(TimeOnly?),
+        [typeof(TimeSpan)] = typeof(TimeSpan?), [typeof(Guid)] = typeof(Guid?),
+        [typeof(Parquet.File.Values.Primitives.Interval)] = typeof(Parquet.File.Values.Primitives.Interval?),
+        [typeof(ReadOnlyMemory<byte>)] = typeof(ReadOnlyMemory<byte>?), [typeof(ReadOnlyMemory<char>)] = typeof(ReadOnlyMemory<char>?),
+    };
+
     public static Type GetNullable(this Type t) {
         TypeInfo ti = t.GetTypeInfo();
 
-        if(ti.IsClass) {
+        if(ti.IsClass || ti.IsInterface || (ti.IsGenericType && ti.GetGenericTypeDefinition() == typeof(Nullable<>))) {
             return t;
         }
 
-        Type nt = typeof(Nullable<>);
-        return nt.MakeGenericType(t);
+        if(NullableOf.TryGetValue(t, out Type? nullable)) {
+            return nullable;
+        }
+
+        // another value type (an enum): the type is constructed, never an instance of it, which native AOT supports
+        // too (Lake.Parquet.AotTests checks it natively); should a runtime refuse, the type itself
+        try {
+            return ConstructNullable(t);
+        } catch(NotSupportedException) {
+            return t;
+        }
     }
+
+    [UnconditionalSuppressMessage("AOT", "IL3050:RequiresDynamicCode",
+        Justification = "Constructs only the Nullable<T> type over a value type, never an instance or code for it; native AOT supports that, as Lake.Parquet.AotTests proves for enums")]
+    private static Type ConstructNullable(Type t) => typeof(Nullable<>).MakeGenericType(t);
 
     public static bool IsSimple(this Type t) {
         if(t == null)
