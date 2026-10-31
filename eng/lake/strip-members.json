@@ -1,0 +1,11 @@
+[
+  {"file": "src/Parquet/ParquetRowGroupReader.cs", "type": "ParquetRowGroupReader", "member": "ReadRawColumnDataBaseAsync", "parameters": "DataField, CancellationToken", "sha256": "702a149262fd2597"},
+  {"file": "src/Parquet/ParquetRowGroupWriter.cs", "type": "ParquetRowGroupWriter", "member": "WriteAsync", "parameters": "DataField, RawColumnData, CancellationToken", "sha256": "dd55ed4b5ff6e8ed"},
+  {"file": "src/Parquet/ParquetRowGroupWriter.cs", "type": "ParquetRowGroupWriter", "member": "WriteAsync", "parameters": "DataField, RawColumnData<T>, CancellationToken", "sha256": "403bc8c7dee10254"},
+  {"file": "src/Parquet/Schema/MapField.cs", "type": "MapField", "member": "CreateSimpleDictionary", "parameters": "", "sha256": "0d3eaf7fe2a56ca9"},
+  {"file": "src/Parquet/Extensions/ParquetClrSchemaExtensions.cs", "type": "ParquetClrSchemaExtensions", "member": "CreateGenericList", "parameters": "Type", "sha256": "5dcd2d0a7a9e9167"},
+  {"file": "src/Parquet/Extensions/ParquetClrSchemaExtensions.cs", "type": "ParquetClrSchemaExtensions", "member": "GetGenericListAddMethod", "parameters": "Type", "sha256": "c32d39d4183db549"},
+  {"file": "src/Parquet/Extensions/ParquetClrSchemaExtensions.cs", "type": "ParquetClrSchemaExtensions", "member": "IsGenericIList", "parameters": "Type", "sha256": "7e3e11570e08ca1a"},
+  {"file": "src/Parquet/Extensions/ParquetClrSchemaExtensions.cs", "type": "ParquetClrSchemaExtensions", "member": "TryExtractIListType", "parameters": "Type, Type?", "sha256": "89ecb58e2d9eb4a4"},
+  {"file": "src/Parquet/Extensions/ParquetClrSchemaExtensions.cs", "type": "ParquetClrSchemaExtensions", "member": "IsAssignableToGenericType", "parameters": "Type, Type", "sha256": "8df85481583c4f35"}
+]
