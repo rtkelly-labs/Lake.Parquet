@@ -6,7 +6,7 @@ This repository adheres to standard open-source community guidelines for the eth
 
 ## 1. Scope & Core Principle
 
-This policy applies to all contributions, code, documentation, and issues submitted to `rtkelly-labs/parquet-dotnet`.
+This policy applies to all contributions, code, documentation, and issues submitted to `rtkelly-labs/Lake.Parquet`.
 
 > **This policy covers this fork only.** Upstream, [aloneguid/parquet-dotnet](https://github.com/aloneguid/parquet-dotnet),
 > does not accept AI-generated issues, pull requests or comments, and blocks accounts that send them.

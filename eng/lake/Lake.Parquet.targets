@@ -20,8 +20,8 @@
         <Authors>Ivan Gavryliuk (@aloneguid) and the Parquet.Net contributors, with changes by rtkelly-labs</Authors>
         <Description>A fork of Parquet.Net (aloneguid/parquet-dotnet) that carries upstream plus only the improvements evaluated against it, in the Lake.Parquet namespace. Every change on top of upstream is recorded in docs/changes/.</Description>
         <PackageTags>apache parquet lake lakehouse dotnet c# parquet.net fork</PackageTags>
-        <PackageProjectUrl>https://github.com/rtkelly-labs/parquet-dotnet</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/rtkelly-labs/parquet-dotnet</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/rtkelly-labs/Lake.Parquet</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/rtkelly-labs/Lake.Parquet</RepositoryUrl>
         <PackageReadmeFile>PACKAGE_README.md</PackageReadmeFile>
         <!-- Upstream hard-codes bin\Debug\...\Parquet.xml; the docs must sit beside Lake.Parquet.dll under its name. -->
         <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\Lake.Parquet.xml</DocumentationFile>
