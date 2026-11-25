@@ -75,10 +75,10 @@ jobs:
         with:
           dotnet-version: 10.0.x
 
-      - name: Fetch upstream
+      - name: Point upstream/master at the stack's base
         run: |
-          git remote add upstream https://github.com/aloneguid/parquet-dotnet.git
-          git fetch --quiet upstream master
+          # upstream (aloneguid/parquet-dotnet) is gone; the stack's base is pinned (docs/changes/0001)
+          git update-ref refs/remotes/upstream/master 658e1cafebdd1d80d6833c40b0f387d0769898c8
 
       - name: Test the stack tool
         run: dotnet test eng/lake/Lake.Stack.Tests --configuration Release
@@ -128,6 +128,13 @@ jobs:
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
           python-version: "3.10"
+
+      # upstream's parquet-mr interop tests run parquet-tools 1.9.0, whose Hadoop fails on JDK 23+
+      - name: Setup Java
+        uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6.3.0
+        with:
+          distribution: temurin
+          java-version: "17"
 
       - name: Install Python dependencies
         run: pip install pyarrow pandas
@@ -354,6 +361,13 @@ jobs:
         with:
           python-version: "3.10"
 
+      # upstream's parquet-mr interop tests run parquet-tools 1.9.0, whose Hadoop fails on JDK 23+
+      - name: Setup Java
+        uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6.3.0
+        with:
+          distribution: temurin
+          java-version: "17"
+
       - name: Install Python dependencies
         run: pip install pyarrow pandas
 
@@ -420,8 +434,8 @@ jobs:
         id: list
         run: |
           set -euo pipefail
-          git remote add upstream https://github.com/aloneguid/parquet-dotnet.git
-          git fetch --quiet upstream master
+          # upstream (aloneguid/parquet-dotnet) is gone; the stack's base is pinned (docs/changes/0001)
+          git update-ref refs/remotes/upstream/master 658e1cafebdd1d80d6833c40b0f387d0769898c8
           list=$(dotnet run --project eng/lake/Lake.Stack --configuration Release -- verify --list)
           echo "list=$list" >> "$GITHUB_OUTPUT"
           echo "$list"
@@ -453,6 +467,13 @@ jobs:
         with:
           python-version: "3.10"
 
+      # upstream's parquet-mr interop tests run parquet-tools 1.9.0, whose Hadoop fails on JDK 23+
+      - name: Setup Java
+        uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6.3.0
+        with:
+          distribution: temurin
+          java-version: "17"
+
       - name: Install Python dependencies
         run: pip install pyarrow pandas
 
@@ -463,8 +484,8 @@ jobs:
           set -euo pipefail
           git config user.name "lake-ci"
           git config user.email "lake-ci@users.noreply.github.com"
-          git remote add upstream https://github.com/aloneguid/parquet-dotnet.git
-          git fetch --quiet upstream master
+          # upstream (aloneguid/parquet-dotnet) is gone; the stack's base is pinned (docs/changes/0001)
+          git update-ref refs/remotes/upstream/master 658e1cafebdd1d80d6833c40b0f387d0769898c8
           dotnet run --project eng/lake/Lake.Stack --configuration Release -- verify "$CHANGE"
 
   # The single required check. Jobs that do not run for an event (verify outside staging) are skipped,
@@ -495,6 +516,13 @@ jobs:
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
           python-version: "3.10"
+
+      # upstream's parquet-mr interop tests run parquet-tools 1.9.0, whose Hadoop fails on JDK 23+
+      - name: Setup Java
+        uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6.3.0
+        with:
+          distribution: temurin
+          java-version: "17"
 
       - name: Install tools
         run: |
@@ -599,8 +627,8 @@ jobs:
 
       - name: Find the upstream commit
         run: |
-          git remote add upstream https://github.com/aloneguid/parquet-dotnet.git
-          git fetch --quiet upstream master
+          # upstream (aloneguid/parquet-dotnet) is gone; the stack's base is pinned (docs/changes/0001)
+          git update-ref refs/remotes/upstream/master 658e1cafebdd1d80d6833c40b0f387d0769898c8
           echo "UPSTREAM_SHA=$(git merge-base HEAD upstream/master)" >> "$GITHUB_ENV"
 
       # the changes this release carries, one line each (cliff.toml)
