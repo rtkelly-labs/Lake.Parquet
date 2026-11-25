@@ -7,7 +7,7 @@ upstream and recorded, in the `Lake.Parquet` namespace. The MIT licence and upst
 ship in this package unchanged.
 
 If you do not need one of the
-[recorded changes](https://github.com/rtkelly-labs/parquet-dotnet/tree/master/docs/changes), use
+[recorded changes](https://github.com/rtkelly-labs/Lake.Parquet/tree/master/docs/changes), use
 [Parquet.Net](https://www.nuget.org/packages/Parquet.Net), the original.
 
 ## Usage

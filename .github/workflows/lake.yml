@@ -75,10 +75,10 @@ jobs:
         with:
           dotnet-version: 10.0.x
 
+      # upstream (aloneguid/parquet-dotnet) is deleted; its last commit is lake(0001)'s parent, named upstream/master
       - name: Fetch upstream
         run: |
-          git remote add upstream https://github.com/aloneguid/parquet-dotnet.git
-          git fetch --quiet upstream master
+          git update-ref refs/remotes/upstream/master "$(git log --format=%P -1 --grep='^lake(0001): ' HEAD)"
 
       - name: Test the stack tool
         run: dotnet test eng/lake/Lake.Stack.Tests --configuration Release
@@ -420,8 +420,7 @@ jobs:
         id: list
         run: |
           set -euo pipefail
-          git remote add upstream https://github.com/aloneguid/parquet-dotnet.git
-          git fetch --quiet upstream master
+          git update-ref refs/remotes/upstream/master "$(git log --format=%P -1 --grep='^lake(0001): ' HEAD)"
           list=$(dotnet run --project eng/lake/Lake.Stack --configuration Release -- verify --list)
           echo "list=$list" >> "$GITHUB_OUTPUT"
           echo "$list"
@@ -463,8 +462,7 @@ jobs:
           set -euo pipefail
           git config user.name "lake-ci"
           git config user.email "lake-ci@users.noreply.github.com"
-          git remote add upstream https://github.com/aloneguid/parquet-dotnet.git
-          git fetch --quiet upstream master
+          git update-ref refs/remotes/upstream/master "$(git log --format=%P -1 --grep='^lake(0001): ' HEAD)"
           dotnet run --project eng/lake/Lake.Stack --configuration Release -- verify "$CHANGE"
 
   # The single required check. Jobs that do not run for an event (verify outside staging) are skipped,
@@ -599,8 +597,7 @@ jobs:
 
       - name: Find the upstream commit
         run: |
-          git remote add upstream https://github.com/aloneguid/parquet-dotnet.git
-          git fetch --quiet upstream master
+          git update-ref refs/remotes/upstream/master "$(git log --format=%P -1 --grep='^lake(0001): ' HEAD)"
           echo "UPSTREAM_SHA=$(git merge-base HEAD upstream/master)" >> "$GITHUB_ENV"
 
       # the changes this release carries, one line each (cliff.toml)

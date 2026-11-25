@@ -78,7 +78,7 @@ its notes name the upstream commit it is based on.
 
 ```text
 aloneguid/parquet-dotnet master   A - B - C - ... - U          upstream's commits, as upstream wrote them
-rtkelly-labs/parquet-dotnet master                    \- 0001 - 0002 - ... - 0025
+rtkelly-labs/Lake.Parquet master                      \- 0001 - 0002 - ... - 0025
                                                          packaging   one commit per change
 ```
 
