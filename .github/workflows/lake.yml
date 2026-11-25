@@ -8,7 +8,7 @@ name: Lake.Parquet
 # it) but is disabled in the fork's Actions settings: the suite job below runs upstream's tests.
 # `lake-ci` is the required check. Unlike upstream's workflow it has no paths-ignore, so a PR that
 # only edits a change record still reports it. A rebaselined stack is pushed to staging/<name> and
-# built here first: `lake-stack rebaseline --push` publishes it to master only once lake-ci passed on
+# built here first: `lake-stack rebaseline --push` publishes it to main only once lake-ci passed on
 # that exact commit (Lake.NET docs/lake-parquet/maintaining.md, "Rebaselining onto upstream"). Rebaselines never run here.
 #
 # Actions are pinned to commit SHAs by hand: rig's pinning policy is not applied to forks, because
@@ -16,12 +16,12 @@ name: Lake.Parquet
 
 on:
   pull_request:
-    branches: [master]
+    branches: [main]
     # labeled: adding the macos label runs the macOS leg of the aot job (below)
     types: [opened, synchronize, reopened, labeled]
   push:
-    # staging/*: a rebaselined stack, built here before it may replace master (Lake.NET docs/lake-parquet/maintaining.md).
-    branches: [master, "staging/**"]
+    # staging/*: a rebaselined stack, built here before it may replace main (Lake.NET docs/lake-parquet/maintaining.md).
+    branches: [main, "staging/**"]
   workflow_dispatch:
     inputs:
       conformance_cases:
@@ -566,7 +566,7 @@ jobs:
   publish:
     name: publish
     needs: [build]
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.publish && github.ref == 'refs/heads/master' }}
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.publish && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write # gh release create tags lake-v<version>, which pins this stack for good

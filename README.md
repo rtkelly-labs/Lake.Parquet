@@ -74,15 +74,15 @@ its notes name the upstream commit it is based on.
 
 ## How the history is kept
 
-`master` is a **rebased stack**, not a merge history:
+`main` is a **rebased stack**, not a merge history:
 
 ```text
 aloneguid/parquet-dotnet master   A - B - C - ... - U          upstream's commits, as upstream wrote them
-rtkelly-labs/parquet-dotnet master                    \- 0001 - 0002 - ... - 0025
+rtkelly-labs/parquet-dotnet main                      \- 0001 - 0002 - ... - 0025
                                                          packaging   one commit per change
 ```
 
-- **Upstream's history is preserved exactly.** Every upstream commit is in `master` with its own hash,
+- **Upstream's history is preserved exactly.** Every upstream commit is in `main` with its own hash,
   author and date; nothing upstream wrote is squashed or rewritten.
 - **The fork's own work is one commit per change, on top.** `lake(0001)` is the packaging, CI and docs;
   each later `lake(NNNN)` commit is one change, with its record in `docs/changes/` in the same commit.
@@ -90,10 +90,10 @@ rtkelly-labs/parquet-dotnet master                    \- 0001 - 0002 - ... - 002
 - **The stack is rebaselined deliberately.** Moving onto a newer upstream is a choice the maintainer
   makes, because upstream's changes can break the changes on top: `lake-stack rebaseline` rebases the
   stack, folds in fixups, checks it and runs the whole test suite locally, then stages it on a
-  `staging/<name>` branch (`staging/v0.1.1`) for CI to build as it builds `master`. Only once that
-  build is green does `--push` promote it to `master`. A change upstream has taken drops out of the stack by itself, and the report says so.
+  `staging/<name>` branch (`staging/v0.1.1`) for CI to build as it builds `main`. Only once that
+  build is green does `--push` promote it to `main`. A change upstream has taken drops out of the stack by itself, and the report says so.
   Nothing rebases on a schedule.
-- **Nothing is lost when `master` moves.** Before a rebaseline is published the previous head is tagged
+- **Nothing is lost when `main` moves.** Before a rebaseline is published the previous head is tagged
   `lake/stack/<date>-<sha>`, and every release is tagged `lake-v<version>`, so a pinned commit stays
   reachable.
 

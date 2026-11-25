@@ -64,7 +64,7 @@ public class SyncTests {
         using var repo = new TestRepo();
         string change = repo.AddChange("0002", "fix-a", "Fix A", files: ("src/A.cs", TestRepo.Lines("a", 20, (3, "fixed"))));
         // Upstream cherry-picks the whole commit, record and all.
-        repo.Upstream.Run("fetch", "--quiet", repo.Fork.Directory, "master");
+        repo.Upstream.Run("fetch", "--quiet", repo.Fork.Directory, "main");
         repo.Upstream.Run("cherry-pick", change);
         repo.Fork.Run("fetch", "--quiet", "upstream");
 

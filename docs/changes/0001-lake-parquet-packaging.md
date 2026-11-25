@@ -18,14 +18,14 @@ upstream file. It is the bottom commit of the stack, so every change is rebased 
 - `docs/changes/`: the rules of the stack, this record, and how to propose a change upstream.
 - `eng/lake/Lake.Stack` (C#) and its tests: checks the stack and pull requests into it, reports its
   changes, rebaselines it onto upstream when the maintainer runs it (rebase, check, test, stage on
-  `staging/<name>` for CI, then promote to `master` once that build is green), rebuilds the `lake/change/*` branches, and moves other branches onto a new stack.
+  `staging/<name>` for CI, then promote to `main` once that build is green), rebuilds the `lake/change/*` branches, and moves other branches onto a new stack.
 - `commitlint.config.mjs` (commit subjects and pull request titles) and `cliff.toml` (release notes, with
   git-cliff): existing tools where one fits, as `docs/maintaining.md` describes, with jj recommended for
   editing and rebasing the stack locally.
 - `eng/lake/RenameNamespace.cs`, `eng/lake/Lake.Parquet.targets`, `eng/lake/VerifyLakeAssembly.cs`
   and `eng/lake/PACKAGE_README.md`: the build-time rename from `Parquet` to `Lake.Parquet` and the
   package's identity.
-- `.github/workflows/lake.yml`: on pull requests, `master` and `staging/*`, checks the stack, renames a copy, builds, verifies the rename, runs
+- `.github/workflows/lake.yml`: on pull requests, `main` and `staging/*`, checks the stack, renames a copy, builds, verifies the rename, runs
   the test suite against it, packs, and publishes on manual dispatch. `lake-ci` is the required check.
 
 The fork needs to ship improvements under its own name without renaming upstream's code, which would

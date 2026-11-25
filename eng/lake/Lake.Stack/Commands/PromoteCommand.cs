@@ -4,7 +4,7 @@ public sealed record PromoteOptions(
     string From,
     string To,
     string Remote = "origin",
-    string Branch = "master",
+    string Branch = "main",
     DateTimeOffset? Now = null);
 
 /// <summary>

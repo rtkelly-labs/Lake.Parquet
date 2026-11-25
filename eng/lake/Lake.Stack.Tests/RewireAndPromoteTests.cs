@@ -14,12 +14,12 @@ public class RewireAndPromoteTests {
         TestRepo.Commit(repo.Fork, "fixup! lake(0002): Fix A", ("src/A.cs", TestRepo.Lines("a", 20, (3, "fixed better"))));
         string oldStack = repo.Fork.Resolve("HEAD");
 
-        repo.Fork.Run("switch", "--quiet", "-c", "feature", "master");
+        repo.Fork.Run("switch", "--quiet", "-c", "feature", "main");
         TestRepo.Commit(repo.Fork, "my feature 1", ("src/B.cs", TestRepo.Lines("b", 20, (1, "mine"))));
         TestRepo.Commit(repo.Fork, "my feature 2", ("src/B.cs", TestRepo.Lines("b", 20, (1, "mine"), (2, "mine too"))));
         repo.Fork.Run("switch", "--quiet", "-c", "from-upstream", "upstream/master");
         TestRepo.Commit(repo.Fork, "an old experiment", ("src/C.cs", TestRepo.Lines("c", 5, (1, "experiment"))));
-        repo.Fork.Run("switch", "--quiet", "master");
+        repo.Fork.Run("switch", "--quiet", "main");
 
         repo.UpstreamCommit("upstream: new", ("src/D.cs", "d\n"));
         Assert.True(SyncCommand.Sync(repo.Context(), new SyncOptions(Fetch: false)).Changed);
@@ -31,19 +31,19 @@ public class RewireAndPromoteTests {
     public void Rewire_moves_only_each_branchs_own_commits_onto_the_new_stack() {
         using var repo = new TestRepo();
         (string oldStack, string newStack) = SyncWithBranchesLeftBehind(repo);
-        repo.Fork.Run("switch", "--quiet", "-c", "current", "master");
+        repo.Fork.Run("switch", "--quiet", "-c", "current", "main");
         TestRepo.Commit(repo.Fork, "already on the new stack", ("src/E.cs", "e\n"));
-        repo.Fork.Run("switch", "--quiet", "master");
+        repo.Fork.Run("switch", "--quiet", "main");
 
         (int code, string output, _) = repo.Tool("rewire", "--apply", "--all");
 
         Assert.Equal(0, code);
-        Assert.Contains("current: already on master", output);
-        Assert.Equal(["my feature 2", "my feature 1"], repo.Fork.Lines("log", "--format=%s", "master..feature"));
+        Assert.Contains("current: already on main", output);
+        Assert.Equal(["my feature 2", "my feature 1"], repo.Fork.Lines("log", "--format=%s", "main..feature"));
         Assert.True(repo.Fork.IsAncestor(newStack, "feature"));
         Assert.False(repo.Fork.IsAncestor(oldStack, "feature"), "the old stack's commits are not carried along");
-        Assert.Equal(["an old experiment"], repo.Fork.Lines("log", "--format=%s", "master..from-upstream"));
-        Assert.Equal("master", repo.Fork.CurrentBranchOrCommit());
+        Assert.Equal(["an old experiment"], repo.Fork.Lines("log", "--format=%s", "main..from-upstream"));
+        Assert.Equal("main", repo.Fork.CurrentBranchOrCommit());
     }
 
     [Fact]
@@ -66,7 +66,7 @@ public class RewireAndPromoteTests {
         repo.AddChange("0002", "fix-a", "Fix A", files: ("src/A.cs", TestRepo.Lines("a", 20, (3, "fixed"))));
         repo.Fork.Run("switch", "--quiet", "-c", "clash", "upstream/master");
         TestRepo.Commit(repo.Fork, "the same line", ("src/A.cs", TestRepo.Lines("a", 20, (3, "mine"))));
-        repo.Fork.Run("switch", "--quiet", "master");
+        repo.Fork.Run("switch", "--quiet", "main");
 
         (int code, _, string error) = repo.Tool("rewire", "--apply", "clash");
 
@@ -78,7 +78,7 @@ public class RewireAndPromoteTests {
     public void Promote_tags_the_old_head_and_moves_the_remote_branch() {
         using var repo = new TestRepo();
         repo.AddChange("0002", "fix-a", "Fix A", files: ("src/A.cs", TestRepo.Lines("a", 20, (3, "fixed"))));
-        repo.Fork.Run("push", "--quiet", "origin", "master");
+        repo.Fork.Run("push", "--quiet", "origin", "main");
         string oldStack = repo.Fork.Resolve("HEAD");
         repo.UpstreamCommit("upstream: new", ("src/D.cs", "d\n"));
         SyncCommand.Sync(repo.Context(), new SyncOptions(Fetch: false));
@@ -88,7 +88,7 @@ public class RewireAndPromoteTests {
 
         Assert.Equal(0, code);
         Assert.Contains("tagged lake/stack/", output);
-        Assert.Equal(newStack, repo.Origin.Resolve("refs/heads/master"));
+        Assert.Equal(newStack, repo.Origin.Resolve("refs/heads/main"));
         string tag = Assert.Single(repo.Origin.Lines("tag", "--list", "lake/stack/*"));
         Assert.Equal(oldStack, repo.Origin.Resolve(tag));
     }
@@ -99,7 +99,7 @@ public class RewireAndPromoteTests {
         string oldStack = repo.Fork.Resolve("HEAD");
         repo.AddChange("0002", "fix-a", "Fix A", files: ("src/A.cs", TestRepo.Lines("a", 20, (3, "fixed"))));
         string merged = repo.Fork.Resolve("HEAD");
-        repo.Fork.Run("push", "--quiet", "origin", "master");   // a pull request merged while the rebaseline ran
+        repo.Fork.Run("push", "--quiet", "origin", "main");   // a pull request merged while the rebaseline ran
         repo.Fork.Run("reset", "--quiet", "--hard", oldStack);
         repo.UpstreamCommit("upstream: new", ("src/D.cs", "d\n"));
         SyncCommand.Sync(repo.Context(), new SyncOptions(Fetch: false));
@@ -108,7 +108,7 @@ public class RewireAndPromoteTests {
 
         Assert.Equal(1, code);
         Assert.Contains("is no longer at", error);
-        Assert.Equal(merged, repo.Origin.Resolve("refs/heads/master"));
+        Assert.Equal(merged, repo.Origin.Resolve("refs/heads/main"));
     }
 
     [Fact]
@@ -121,6 +121,6 @@ public class RewireAndPromoteTests {
 
         Assert.Equal(1, code);
         Assert.Contains("breaks the stack's rules", error);
-        Assert.Equal(oldStack, repo.Origin.Resolve("refs/heads/master"));
+        Assert.Equal(oldStack, repo.Origin.Resolve("refs/heads/main"));
     }
 }

@@ -4,7 +4,7 @@ namespace Lake.Stack.Tests;
 /// Three repositories in a temporary directory, laid out like the real thing: <c>upstream</c> (a working
 /// repository standing in for aloneguid/parquet-dotnet), <c>origin.git</c> (a bare one standing in for
 /// the fork on GitHub) and <c>fork</c> (a clone of origin with an <c>upstream</c> remote), whose
-/// <c>master</c> has the stack's bottom commit, <c>lake(0001)</c>.
+/// <c>main</c> has the stack's bottom commit, <c>lake(0001)</c>.
 /// </summary>
 public sealed class TestRepo : IDisposable {
 
@@ -22,6 +22,7 @@ public sealed class TestRepo : IDisposable {
 
         Run(root, "clone", "--quiet", "--bare", Upstream.Directory, "origin.git");
         Origin = new Git(Path.Combine(root, "origin.git"));
+        Origin.Run("branch", "-m", "master", "main");
         Run(root, "clone", "--quiet", Origin.Directory, "fork");
         Fork = Configure(new Git(Path.Combine(root, "fork")));
         Fork.Run("remote", "add", "upstream", Upstream.Directory);
@@ -29,7 +30,7 @@ public sealed class TestRepo : IDisposable {
 
         AddChange("0001", "packaging", "Packaging", kind: "addition",
             files: [("README.md", "# fork\n"), ("docs/changes/README.md", "rules\n")]);
-        Fork.Run("push", "--quiet", "origin", "master");
+        Fork.Run("push", "--quiet", "origin", "main");
     }
 
     /// <summary>Runs the tool in the fork, as the command line would.</summary>

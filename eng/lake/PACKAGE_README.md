@@ -7,7 +7,7 @@ upstream and recorded, in the `Lake.Parquet` namespace. The MIT licence and upst
 ship in this package unchanged.
 
 If you do not need one of the
-[recorded changes](https://github.com/rtkelly-labs/parquet-dotnet/tree/master/docs/changes), use
+[recorded changes](https://github.com/rtkelly-labs/parquet-dotnet/tree/main/docs/changes), use
 [Parquet.Net](https://www.nuget.org/packages/Parquet.Net), the original.
 
 ## Usage
@@ -37,5 +37,5 @@ Upstream's documentation applies apart from the namespace:
 ## Links
 
 - [Fork repository](https://github.com/rtkelly-labs/parquet-dotnet) and its [decisions and vision](https://github.com/rtkelly-labs/Lake.NET/blob/main/docs/lake-parquet/decisions.md)
-- [Changes carried on top of upstream](https://github.com/rtkelly-labs/parquet-dotnet/tree/master/docs/changes)
+- [Changes carried on top of upstream](https://github.com/rtkelly-labs/parquet-dotnet/tree/main/docs/changes)
 - [Upstream: aloneguid/parquet-dotnet](https://github.com/aloneguid/parquet-dotnet)
