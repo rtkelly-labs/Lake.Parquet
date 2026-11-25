@@ -54,8 +54,7 @@ jobs:
       - name: Check out the upstream base
         run: |
           set -euo pipefail
-          git remote add upstream https://github.com/aloneguid/parquet-dotnet.git
-          git fetch --quiet upstream master
+          git update-ref refs/remotes/upstream/master "$(git log --format=%P -1 --grep='^lake(0001): ' HEAD)"
           base=$(git merge-base HEAD upstream/master)
           git worktree add --quiet --detach "$RUNNER_TEMP/upstream" "$base"
           echo "BASE=$base" >> "$GITHUB_ENV"
