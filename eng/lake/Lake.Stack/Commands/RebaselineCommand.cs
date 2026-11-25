@@ -13,7 +13,7 @@ public sealed record RebaselineOptions(
     bool SkipCiCheck = false,
     bool Test = true,
     string Remote = "origin",
-    string Branch = "master",
+    string Branch = "main",
     Func<StackContext, int>? RunTests = null,
     CiStatus? Ci = null);
 
@@ -26,7 +26,7 @@ public sealed record RebaselineOptions(
 /// <item>on a conflict, stops; resolve it, <c>git rebase --continue</c>, then <c>rebaseline --continue</c>;</item>
 /// <item>checks the stack's rules and runs the test suite on the result;</item>
 /// <item>with <c>--stage &lt;name&gt;</c>: pushes the result to <c>staging/&lt;name&gt;</c>, where CI builds it as
-/// it would build master;</item>
+/// it would build main;</item>
 /// <item>with <c>--push</c> only, and only once the staged commit is the one being published and its
 /// <c>lake-ci</c> check passed: tags the old head, moves the remote's stack branch with a lease on it,
 /// regenerates the change branches and deletes the staging branch.</item>

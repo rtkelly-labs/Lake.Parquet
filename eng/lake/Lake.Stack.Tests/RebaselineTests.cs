@@ -18,7 +18,7 @@ public class RebaselineTests {
 
     static string PublishedStack(TestRepo repo) {
         repo.AddChange("0002", "fix-a", "Fix A", files: ("src/A.cs", TestRepo.Lines("a", 20, (3, "fixed"))));
-        repo.Fork.Run("push", "--quiet", "origin", "master");
+        repo.Fork.Run("push", "--quiet", "origin", "main");
         return repo.Fork.Resolve("HEAD");
     }
 
@@ -33,14 +33,14 @@ public class RebaselineTests {
         Assert.Equal(0, code);
         Assert.Contains("Ready, not published", output);
         Assert.True(repo.Fork.IsAncestor(upstream, "HEAD"));
-        Assert.Equal(published, repo.Origin.Resolve("refs/heads/master"));
+        Assert.Equal(published, repo.Origin.Resolve("refs/heads/main"));
 
         (code, output, _) = Rebaseline(repo, new RebaselineOptions(Continue: true, Stage: "v0.1.1"));
 
         Assert.Equal(0, code);
         Assert.Contains("Staged", output);
         Assert.Equal(repo.Fork.Resolve("HEAD"), repo.Origin.Resolve("refs/heads/staging/v0.1.1"));
-        Assert.Equal(published, repo.Origin.Resolve("refs/heads/master"));
+        Assert.Equal(published, repo.Origin.Resolve("refs/heads/main"));
 
         int testRuns = 0;
         string? checkedCommit = null;
@@ -51,7 +51,7 @@ public class RebaselineTests {
         Assert.Equal(0, testRuns);   // the same head was already verified
         Assert.Equal($"lake-ci@{repo.Fork.Resolve("HEAD")}", checkedCommit);
         Assert.Null(repo.Origin.TryResolve("refs/heads/staging/v0.1.1"));
-        Assert.Equal(repo.Fork.Resolve("HEAD"), repo.Origin.Resolve("refs/heads/master"));
+        Assert.Equal(repo.Fork.Resolve("HEAD"), repo.Origin.Resolve("refs/heads/main"));
         string tag = Assert.Single(repo.Origin.Lines("tag", "--list", "lake/stack/*"));
         Assert.Equal(published, repo.Origin.Resolve(tag));
         Assert.NotNull(repo.Origin.TryResolve("refs/heads/lake/change/0002-fix-a"));
@@ -77,7 +77,7 @@ public class RebaselineTests {
         (code, _, _) = Rebaseline(repo, new RebaselineOptions(Continue: true, Push: true));
 
         Assert.Equal(0, code);
-        Assert.Contains("both", repo.Origin.Run("show", "refs/heads/master:src/A.cs"));
+        Assert.Contains("both", repo.Origin.Run("show", "refs/heads/main:src/A.cs"));
         Assert.Equal(published, repo.Origin.Resolve(Assert.Single(repo.Origin.Lines("tag", "--list", "lake/stack/*"))));
     }
 
@@ -91,7 +91,7 @@ public class RebaselineTests {
 
         Assert.Equal(1, code);
         Assert.Contains("tests fail", error);
-        Assert.Equal(published, repo.Origin.Resolve("refs/heads/master"));
+        Assert.Equal(published, repo.Origin.Resolve("refs/heads/main"));
         Assert.Empty(repo.Origin.Lines("tag", "--list", "lake/stack/*"));
         Assert.Null(repo.Origin.TryResolve("refs/heads/staging/v0.1.1"));   // a failing stack is not staged
     }
@@ -110,7 +110,7 @@ public class RebaselineTests {
 
         Assert.Equal(1, code);
         Assert.Contains(message, error);
-        Assert.Equal(published, repo.Origin.Resolve("refs/heads/master"));
+        Assert.Equal(published, repo.Origin.Resolve("refs/heads/main"));
         Assert.NotNull(repo.Origin.TryResolve("refs/heads/staging/v0.1.1"));
     }
 
@@ -124,7 +124,7 @@ public class RebaselineTests {
 
         Assert.Equal(1, code);
         Assert.Contains("Not staged", error);
-        Assert.Equal(published, repo.Origin.Resolve("refs/heads/master"));
+        Assert.Equal(published, repo.Origin.Resolve("refs/heads/main"));
     }
 
     [Fact]
@@ -167,7 +167,7 @@ public class RebaselineTests {
 
         StackException e = Assert.Throws<StackException>(() => Rebaseline(repo, new RebaselineOptions()));
 
-        Assert.Contains("is not origin/master", e.Message);
+        Assert.Contains("is not origin/main", e.Message);
     }
 
     [Fact]
@@ -204,10 +204,10 @@ public class RebasedElsewhereTests {
     public void A_stack_rebased_with_another_tool_is_checked_staged_and_promoted() {
         using var repo = new TestRepo();
         repo.AddChange("0002", "fix-a", "Fix A", files: ("src/A.cs", TestRepo.Lines("a", 20, (3, "fixed"))));
-        repo.Fork.Run("push", "--quiet", "origin", "master");
+        repo.Fork.Run("push", "--quiet", "origin", "main");
         string published = repo.Fork.Resolve("HEAD");
         string upstream = repo.UpstreamCommit("upstream: new", ("src/D.cs", "d\n"));
-        // what `jj rebase -b master -d master@upstream` does, done here with git
+        // what `jj rebase -b main -d master@upstream` does, done here with git
         repo.Fork.Run("rebase", "--quiet", "upstream/master");
         var output = new StringWriter();
         var context = new StackContext(repo.Fork, "upstream/master", output, new StringWriter());
@@ -217,12 +217,12 @@ public class RebasedElsewhereTests {
         Assert.Equal(0, code);
         Assert.Contains("Rebased onto", output.ToString());
         Assert.Equal(repo.Fork.Resolve("HEAD"), repo.Origin.Resolve("refs/heads/staging/v0.1.1"));
-        Assert.Equal(published, repo.Origin.Resolve("refs/heads/master"));
+        Assert.Equal(published, repo.Origin.Resolve("refs/heads/main"));
 
         code = RebaselineCommand.Run(context, new RebaselineOptions(Continue: true, Push: true, RunTests: _ => 0, Ci: (_, _) => CiState.Success));
 
         Assert.Equal(0, code);
-        Assert.True(repo.Origin.IsAncestor(upstream, "refs/heads/master"));
+        Assert.True(repo.Origin.IsAncestor(upstream, "refs/heads/main"));
         Assert.Equal(published, repo.Origin.Resolve(Assert.Single(repo.Origin.Lines("tag", "--list", "lake/stack/*"))));
     }
 
@@ -230,7 +230,7 @@ public class RebasedElsewhereTests {
     public void A_stack_not_on_upstream_is_refused() {
         using var repo = new TestRepo();
         repo.AddChange("0002", "fix-a", "Fix A", files: ("src/A.cs", "a\n"));
-        repo.Fork.Run("push", "--quiet", "origin", "master");
+        repo.Fork.Run("push", "--quiet", "origin", "main");
         repo.UpstreamCommit("upstream: new", ("src/D.cs", "d\n"));
         var context = new StackContext(repo.Fork, "upstream/master", new StringWriter(), new StringWriter());
 

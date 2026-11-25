@@ -51,7 +51,7 @@ namespace Lake.Stack {
             var skipCiCheck = new Option<bool>("--skip-ci-check") { Description = "Publish without a green staged build (only after checking CI yourself)" };
             var noTest = new Option<bool>("--no-test") { Description = $"Do not run {RebaselineCommand.DefaultTestProject}" };
             var rebaselineRemote = new Option<string>("--remote") { Description = "Default: origin", DefaultValueFactory = _ => "origin" };
-            var rebaselineBranch = new Option<string>("--branch") { Description = "The stack branch (default: master)", DefaultValueFactory = _ => "master" };
+            var rebaselineBranch = new Option<string>("--branch") { Description = "The stack branch (default: main)", DefaultValueFactory = _ => "main" };
             var rebaseline = new Command("rebaseline", "Move the stack onto a newer upstream, deliberately: rebase, verify, stage for CI, and publish only with --push") {
                 rebaselineOnto, resume, rebased, abort, showStatus, stage, publishIt, skipCiCheck, noTest, rebaselineRemote, rebaselineBranch,
             };
@@ -73,7 +73,7 @@ namespace Lake.Stack {
             var branches = new Command("branches", "Regenerate lake/change/NNNN-name: upstream plus one change and what it needs") { head, branchesOnto, push };
             branches.SetAction(parse => Guard(error, () => BranchesCommand.Run(Context(parse), parse.GetValue(head)!, parse.GetValue(branchesOnto), parse.GetValue(push))));
 
-            var stack = new Option<string>("--onto") { Description = "The stack branch (default: master)", DefaultValueFactory = _ => "master" };
+            var stack = new Option<string>("--onto") { Description = "The stack branch (default: main)", DefaultValueFactory = _ => "main" };
             var apply = new Option<bool>("--apply") { Description = "Move them (without it, only show what would move)" };
             var all = new Option<bool>("--all") { Description = "Every local branch but the stack and the generated ones" };
             var names = new Argument<string[]>("branch") { Arity = ArgumentArity.ZeroOrMore, Description = "Branches to move" };
@@ -83,7 +83,7 @@ namespace Lake.Stack {
             var from = new Option<string>("--from") { Description = "The remote branch's current head (the old stack)", Required = true };
             var to = new Option<string>("--to") { Description = "The rebased stack to move it to", Required = true };
             var remote = new Option<string>("--remote") { Description = "Default: origin", DefaultValueFactory = _ => "origin" };
-            var branch = new Option<string>("--branch") { Description = "Default: master", DefaultValueFactory = _ => "master" };
+            var branch = new Option<string>("--branch") { Description = "Default: main", DefaultValueFactory = _ => "main" };
             var promote = new Command("promote", "Tag the old stack head and move the remote's stack branch to the new one") { from, to, remote, branch };
             promote.SetAction(parse => Guard(error, () => PromoteCommand.Run(Context(parse), new PromoteOptions(
                 parse.GetValue(from)!, parse.GetValue(to)!, parse.GetValue(remote)!, parse.GetValue(branch)!))));
@@ -103,7 +103,7 @@ namespace Lake.Stack {
             var historyShow = new Command("show", "List the published versions of the stack or of one change, newest first") { historyName };
             historyShow.SetAction(parse => Guard(error, () => HistoryCommand.Show(Context(parse), parse.GetValue(historyName)!)));
             var historyRemote = new Option<string>("--remote") { Description = "Default: origin", DefaultValueFactory = _ => "origin" };
-            var historyBranch = new Option<string>("--branch") { Description = "The stack branch (default: master)", DefaultValueFactory = _ => "master" };
+            var historyBranch = new Option<string>("--branch") { Description = "The stack branch (default: main)", DefaultValueFactory = _ => "main" };
             var historyRecord = new Command("record", "Record the remote's stack branch and every change branch as published versions, and push the history") { historyRemote, historyBranch };
             historyRecord.SetAction(parse => Guard(error, () => HistoryCommand.RecordAll(Context(parse), parse.GetValue(historyRemote)!, parse.GetValue(historyBranch)!)));
             var history = new Command("history", "Every published version of the stack and of each change (lake/history/*)") { historyShow, historyRecord };
