@@ -66,7 +66,7 @@ that can be done mechanically:
 .NET via `dotnet` (SDKs 8 and 10). Python with `pyarrow` and `pandas` for the Arrow interop tests.
 
 ```bash
-git remote add upstream https://github.com/aloneguid/parquet-dotnet.git && git fetch upstream
+git update-ref refs/remotes/upstream/master 658e1caf   # upstream is gone; the stack's base (docs/changes/0001)
 alias lake-stack='dotnet run --project eng/lake/Lake.Stack --configuration Release --'
 lake-stack check                             # the stack follows the rules
 lake-stack status                            # the changes and their status

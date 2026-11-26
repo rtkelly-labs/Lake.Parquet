@@ -32,6 +32,13 @@ The fork needs to ship improvements under its own name without renaming upstream
 make every rebase conflict, and to move onto newer upstreams, when the maintainer chooses, without
 rewriting upstream's history. See [`../vision.md`](../vision.md).
 
+Upstream, `aloneguid/parquet-dotnet`, and its owner's account were deleted in November 2026, and the fork left
+GitHub's fork network. Upstream's history is still the base of the stack, with its own hashes, so the stack tool
+needs only a name for the base, not the remote: CI points `upstream/master` at `658e1caf` (`git update-ref`) instead
+of fetching it. A local clone does the same. Rebaselining waits until a live upstream exists again.
+The parquet-mr interop tests run on a pinned JDK 17 (`setup-java`), since parquet-tools 1.9.0's Hadoop throws
+`getSubject is not supported` on JDK 23 and later.
+
 ## Evaluation
 
 Built locally from upstream `master` at `658e1ca`: the rename changed 162 of 164 source files and left

@@ -69,7 +69,7 @@ public class ParquetReaderTest : TestBase {
             using ParquetRowGroupReader rgr = reader.OpenRowGroupReader(0);
             DataField[] fields = reader.Schema.GetDataFields();
             decimal[] values = await ReadValuesAsync<decimal>(rgr, fields[1]);
-            Assert.Equal((decimal)1.2, values[0]);
+            Assert.Equal(1.2m, values[0]);
         }
     }
 
